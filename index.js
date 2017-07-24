@@ -1,0 +1,1 @@
+export multiselect from './components/multiselect.vue';

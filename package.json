@@ -1,0 +1,34 @@
+{
+  "name": "multiselect",
+  "version": "1.0.0",
+  "description": "Multiselect packages for Vue.js 2",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lapaliv/vue-multiselect.git"
+  },
+  "keywords": [
+    "vue",
+    "vue.js",
+    "multiselect",
+    "select"
+  ],
+  "author": {
+    "name": "lapaliv",
+    "email": "lapaliv@gmail.com"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lapaliv/vue-multiselect/issues"
+  },
+  "homepage": "https://github.com/lapaliv/vue-multiselect#readme",
+  "dependencies": {
+    "vue": "^2.4.1",
+    "webpack": "^3.3.0",
+    "axios": "^0.16.2"
+  },
+  "engines": {
+    "node": ">= 8.0.0",
+    "npm": ">= 3.0.0"
+  }
+}
