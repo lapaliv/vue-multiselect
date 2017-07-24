@@ -40,7 +40,7 @@
                    :image-name="optionImageName"
                    :key-name="optionKeyName"
         ></component>
-        <!--<input type="hidden" name=""-->
+        <input type="hidden" :name="name + (isMulti ? '[]' : '')" v-for="option in options" v-if="valueOnInput" :value="option.id"/>
     </div>
 </template>
 
@@ -62,9 +62,11 @@
             optionKeyName: {type: String, default: 'id'},
             asyncSearchCallback: {type: Function, default: null},
             asyncSearchUrl: {type: String, default: null},
+            name: {type: String, default: null},
             attachInput: {type: Boolean, default: false},
             isMulti: {type: Boolean, default: false},
             isSearch: {type: Boolean, default: true},
+            valueOnInput: {type: Boolean, default: true},
             value: {
                 type: [Array, Object], default: function () {
                     return [];
@@ -75,6 +77,7 @@
                     return [];
                 }
             },
+            onChange: {type: Function, default: null}
         },
         data() {
             return {
@@ -119,6 +122,10 @@
 
                 if (!this.dropdownOptions.length || !this.isMulti) {
                     this.handleHideDropdownList();
+                }
+
+                if(this.onChange instanceof Function) {
+                    this.onChange(this.selectedOptions);
                 }
             },
             handleDropOption(option) {
@@ -176,7 +183,14 @@
                 if (Array.isArray(options)) {
                     for (let index = 0; index < options.length; index++) {
                         if (options[index] instanceof Object) {
-                            results.push(options[index]);
+                            let obj = options[index];
+                            if(typeof obj[this.optionTitleName] === 'undefined') {
+                                continue;
+                            }
+                            if(typeof obj[this.optionKeyName] === 'undefined') {
+                                obj[this.optionKeyName] = obj[this.optionTitleName];
+                            }
+                            results.push(obj);
                         } else {
                             results.push({
                                 [this.optionKeyName]: options[index],

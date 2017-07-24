@@ -1,7 +1,7 @@
 {
-  "name": "multiselect",
+  "name": "vue-bootstrap-multiselect",
   "version": "1.0.0",
-  "description": "Multiselect packages for Vue.js 2",
+  "description": "Multiselect packages for Vue.js 2 by bootstrap 4",
   "main": "index.js",
   "repository": {
     "type": "git",

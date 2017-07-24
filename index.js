@@ -1,1 +1,3 @@
-export multiselect from './components/multiselect.vue';
+import Multiselect from './components/multiselect.vue';
+
+export default Multiselect;
