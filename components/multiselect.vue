@@ -40,7 +40,7 @@
                    :image-name="optionImageName"
                    :key-name="optionKeyName"
         ></component>
-        <input type="hidden" :name="name + (isMulti ? '[]' : '')" v-for="option in options" v-if="valueOnInput" :value="option.id"/>
+        <input type="hidden" :name="name + (isMulti ? '[]' : '')" v-for="option in options" v-if="attachInput" :value="option.id"/>
     </div>
 </template>
 
@@ -66,7 +66,6 @@
             attachInput: {type: Boolean, default: false},
             isMulti: {type: Boolean, default: false},
             isSearch: {type: Boolean, default: true},
-            valueOnInput: {type: Boolean, default: true},
             value: {
                 type: [Array, Object], default: function () {
                     return [];
