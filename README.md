@@ -8,9 +8,16 @@
 npm install --save vue-bootstrap-multiselect
 ```
 
+#### ES6
 ```js
 import Multiselect from 'vue-bootstrap-multiselect';
 Vue.component('multiselect', Multiselect);
+```
+
+#### SDN
+```html
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/vue-bootstrap-multiselect/dist/vue-bootstrap-multiselect.min.css" /> 
+<script type="text/javascript" src="https://unpkg.com/vue-bootstrap-multiselect/dist/vue-bootstrap-multiselect.min.js"></script> 
 ```
 
 ## Настройка (Setup)
@@ -107,3 +114,21 @@ or
 1. id = apple, title = apple
 2. id = banana, title = banana
 3. id = man, title = man
+
+## For developers
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+```
+
+For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
