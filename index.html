@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>multiselect</title>
+</head>
+<body style="margin-top: 30px;">
+<div id="app">
+    <!-- Simple select -->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Simple select</label>
+            <component is="multiselect"
+                       :all-values="['One', 'Two', 'Three', 'Four']"
+                       value="One"
+            ></component>
+        </div>
+    </div>
+
+    <!-- Multiselect -->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Multiselect</label>
+            <component is="multiselect"
+                       :is-multi="true"
+                       :is-search="false"
+                       :all-values="['One', 'Two', 'Three', 'Four']"
+                       value="One"
+            ></component>
+        </div>
+    </div>
+
+    <!-- Multiselect with search -->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Multiselect with search</label>
+            <component is="multiselect"
+                       :is-multi="true"
+                       :all-values="['One', 'Two', 'Three', 'Four']"
+                       value="One"
+            ></component>
+        </div>
+    </div>
+
+    <!-- Async data from server -->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Async data from server</label>
+            <component is="multiselect"
+                       :is-multi="true"
+                       async-search-url="https://api.mockaroo.com/api/0bb305f0?count=5&key=f2eb7950"
+                       :all-values="['One', 'Two', 'Three', 'Four']"
+                       value="One"
+            ></component>
+            <small class="text-muted">* Unfortunately, the data generation server does not support searching.
+                This search will not work here
+            </small>
+        </div>
+    </div>
+
+</div>
+<!-- built files will be auto injected -->
+</body>
+</html>

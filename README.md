@@ -2,6 +2,10 @@
 
 Пакет позволяет заменить стандартные средства выборки элементов с использованием Vue.js 2 и bootstrap 4
 
+#### Demo
+
+[JSFiddle](https://jsfiddle.net/tw9ejxns/1/)
+
 ## Установка (Install)
 
 ```

@@ -1,9 +1,7 @@
 <template>
     <div class="multiselect-dropdown-list">
         <ul class="list-group mt-1" v-if="show" :style="width === null ? null : ('width:' + width + 'px')">
-            <li class="list-group-item py-2 px-3" v-if="!options.length">
-                Нет элементов для отображения
-            </li>
+            <li class="list-group-item py-2 px-3" v-if="!options.length">No results</li>
             <li class="list-group-item list-group-item-action p-2" v-for="option in options"
                 @click="handleSelect(option, $event)">
                 <img :src="option[imageName]" v-if="option.hasOwnProperty('image')" class="mr-2">
@@ -47,10 +45,6 @@
       let $vue = this
       document.addEventListener('click', function () {
         $vue.onHide()
-//        let lists = document.getElementsByClassName('multiselect-dropdown-list')
-//        for(let index = 0; index < lists.length; index++) {
-//          lists[index].setAttribute('style')
-//        }
       })
     }
   }

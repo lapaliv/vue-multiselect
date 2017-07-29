@@ -1,11 +1,11 @@
 <template>
-    <table class="tag rounded" :class="{'w-100': !short, 'mr-2 mb-2': short}">
+    <table class="tag rounded" :class="{'w-100': !short, 'mr-2': short, 'mb-2': optionsCount > 1}">
         <tr>
             <td class="image align-top" v-if="image !== null">
                 <img :src="image" :alt="option[titleName]"/>
             </td>
             <td class="text-left align-middle p-2" :class="{'w-100': !short}">{{ option[titleName] }}</td>
-            <td class="action p-2">
+            <td class="action p-2" @click="onDrop(option, $event)">
                 <i class="fa fa-remove"></i>
             </td>
         </tr>
@@ -20,7 +20,11 @@
       titleName: {type: String, default: 'title'},
       imageName: {type: String, default: 'image'},
       keyName: {type: String, default: 'id'},
-      onDrop: {type: Function, required: true}
+      onDrop: {type: Function, required: true},
+      optionsCount: {
+        type: Number,
+        required: true
+      }
     },
     data () {
       return {}
@@ -33,8 +37,7 @@
 
         return null
       }
-    },
-    methods: {}
+    }
   }
 </script>
 

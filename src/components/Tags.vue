@@ -11,6 +11,7 @@
                    :option="option"
                    :short="short"
                    :on-drop="handleDrop"
+                   :options-count="options.length"
         ></component>
     </div>
     <div v-else-if="!isShowSearch && options.length" class="d-flex">
@@ -24,6 +25,7 @@
                            :option="option"
                            :short="short"
                            :on-drop="handleDrop"
+                           :options-count="options.length"
                 ></component>
             </div>
         </div>
@@ -75,7 +77,7 @@
     },
     computed: {},
     methods: {
-      handleDrop (option) {
+      handleDrop (option, event) {
         event.stopPropagation()
         this.onDrop(option)
       }

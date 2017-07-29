@@ -100,8 +100,15 @@
         let results = []
         let options = this.searchOptions instanceof Object ? this.searchOptions : this.defaultSearchOptions
         let selected = this.options
-        for (let index in options) {
-          if (selected.indexOf(options[index]) === -1) {
+        for (let index = 0; index < options.length; index++) {
+          let isSearch = false
+          for (let selectedIndex = 0; selectedIndex < selected.length; selectedIndex++) {
+            if (selected[selectedIndex][this.optionKeyName] === options[index][this.optionKeyName]) {
+              isSearch = true
+            }
+          }
+
+          if (!isSearch) {
             results.push(options[index])
           }
         }
@@ -164,7 +171,7 @@
             promise = this.asyncSearchCallback(query)
           }
 
-          if (promise instanceof Promise) {
+          if (typeof promise.then === 'function' && typeof promise.catch === 'function') {
             promise
               .then((res) => {
                 $vue.searchOptions = $vue.convertOptionsToObjects(res.data)
@@ -192,6 +199,10 @@
       },
       convertOptionsToObjects (options) {
         let results = []
+
+        if (typeof options === 'string') {
+          options = [options]
+        }
 
         if (Array.isArray(options)) {
           for (let index = 0; index < options.length; index++) {

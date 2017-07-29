@@ -5,3 +5,4 @@ src/main.js
 /.postcssrc.js
 /.gitignore
 /index.html
+/static/
