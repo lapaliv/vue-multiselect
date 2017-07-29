@@ -4,7 +4,7 @@
 
 #### Demo
 
-[JSFiddle](https://jsfiddle.net/tw9ejxns/1/)
+[JSFiddle](https://jsfiddle.net/lapaliv/ugdfmj7n/)
 
 ## Установка (Install)
 

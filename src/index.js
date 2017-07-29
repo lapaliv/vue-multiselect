@@ -1,2 +1,1 @@
-import Multiselect from './Multiselect.vue'
-export default Multiselect
+module.exports = require('./Multiselect.vue')

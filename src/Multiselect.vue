@@ -8,6 +8,7 @@
                    :key-name="optionKeyName"
                    :on-drop="handleDropOption"
                    :dropdown-list-count="Object.keys(dropdownOptions).length"
+                   :is-show-dropdown-list="showDropdownList"
                    :on-show-dropdown-list="handleShowDropdownList"
                    :on-hide-dropdown-list="handleHideDropdownList"
                    :is-show-search="isSearch && (isMulti || !Object.keys(options).length)"
@@ -68,7 +69,7 @@
       isMulti: {type: Boolean, default: false},
       isSearch: {type: Boolean, default: true},
       value: {
-        type: [Array, Object],
+        type: [Array, Object, String],
         default: function () {
           return []
         }

@@ -22,8 +22,9 @@
     methods: {
       handleClickCaret (event) {
         let $vue = this
+        let isShowDropDownList = $vue.isShowDropdownList
         setTimeout(function () {
-          if ($vue.isShowDropdownList) {
+          if (isShowDropDownList) {
             $vue.onHideDropdownList()
           } else {
             $vue.onShowDropdownList()

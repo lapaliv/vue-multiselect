@@ -1,6 +1,6 @@
 {
   "name": "vue-bootstrap-multiselect",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "Multiselect packages for Vue.js 2 by bootstrap 4 without jQuery",
   "main": "./src/index.js",
   "license": "ISC",
