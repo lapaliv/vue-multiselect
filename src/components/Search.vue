@@ -1,11 +1,14 @@
 <template>
     <div class="d-flex" v-if="isShow">
         <input type="text"
+               ref="input"
+               tabindex="-1"
                v-model="query"
                class="m-0 d-inline-flex form-control w-100 border-0 rounded"
                :placeholder="placeholder"
                @focus="handleInputFocus"
                @click="handleInputFocus"
+               @blur="handleInputBlur"
         />
         <div class="d-flex align-items-center text-center">
             <div v-if="isLoading" class="spinner"></div>
@@ -47,25 +50,32 @@
     computed: {},
     methods: {
       handleInputFocus (event) {
-        event.stopPropagation()
-        if (this.query !== null && this.query.length) {
-          this.onShowDropdownList()
-        }
+        let $vue = this
+        setTimeout(function () {
+          if ($vue.query !== null && $vue.query.length) {
+            $vue.onShowDropdownList()
+          }
+        }, 0.1)
+      },
+      handleInputBlur (event) {
+        this.onHideDropdownList()
+        this.query = null
       }
     },
     watch: {
       query (query) {
-        if (query !== null && query.length) {
-          let $vue = this
-          $vue.isLoading = true
-          $vue.onHideDropdownList()
-          setTimeout(() => {
-            if ($vue.query === query) {
-              this.onSearch(query === null ? null : (!query.length ? null : query))
-            }
-          }, 200)
-        } else {
+        let $vue = this
+        setTimeout(() => {
+          if ($vue.query === query) {
+            this.onSearch(query === null ? null : (!query.length ? null : query))
+          }
+        }, 200)
+
+        if (query === null || !query.length) {
+          this.onHideDropdownList()
           this.isLoading = false
+        } else {
+          this.isLoading = true
         }
       },
       isShowDropdownList (isShow) {

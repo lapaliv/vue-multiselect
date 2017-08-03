@@ -1,5 +1,5 @@
 <template>
-    <div class="d-inline-flex py-2 px-3" @click="handleClickCaret" v-if="dropdownListCount"
+    <div class="d-inline-flex py-2 px-3" @click="handleClickCaret"
          :class="{'align-self-center': optionsCount <= 1, 'align-self-end': optionsCount > 1}"
     >
         <i class="fa" :class="{'fa-caret-up': isShowDropdownList, 'fa-caret-down': !isShowDropdownList}"></i>

@@ -3,15 +3,115 @@
 <head>
     <meta charset="utf-8">
     <title>multiselect</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://unpkg.com/vue-bootstrap-multiselect@1.0.10/dist/vue-bootstrap-multiselect.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="https://unpkg.com/vue@2.4.2/dist/vue.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vue-bootstrap-multiselect@1.0.10/dist/vue-bootstrap-multiselect.min.js"></script>
 </head>
 <body style="margin-top: 30px;">
 <div id="app">
+    <h3 class="text-center">Local components</h3>
     <!-- Simple select -->
     <div class="row">
         <div class="col-8 offset-2">
             <label>Simple select</label>
             <component is="multiselect"
+                       :all-values="['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']"
+                       value="Thursday"
+            ></component>
+        </div>
+    </div>
+    <!-- Simple select with ids -->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Simple select as objects</label>
+            <component is="multiselect"
+                       :all-values="[
+                            {id:'monday', title: 'Monday'},
+                            {id:'tuesday', title: 'Tuesday'},
+                            {id:'wednesday', title: 'Wednesday'},
+                            {id:'thursday', title: 'Thursday'},
+                            {id:'friday', title: 'Friday'},
+                            {id:'saturday', title: 'Saturday'},
+                            {id:'sunday', title: 'Sunday'}
+                        ]"
+                       value="tuesday"
+            ></component>
+        </div>
+    </div>
+
+    <!-- Multiselect -->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Multiselect</label>
+            <component is="multiselect"
+                       :is-multi="true"
+                       :is-search="false"
+                       :all-values="[{id:1,title:'Monday'}, 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']"
+                       :value="[1, 'Tuesday']"
+            ></component>
+        </div>
+    </div>
+
+    <!-- Multiselect with ids-->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Multiselect as objects</label>
+            <component is="multiselect"
+                       :is-multi="true"
+                       :is-search="false"
+                       :all-values="[
+                            {id:1, title: 'Monday'},
+                            {id:2, title: 'Tuesday'},
+                            {id:3, title: 'Wednesday'},
+                            {id:4, title: 'Thursday'},
+                            {id:5, title: 'Friday'},
+                            {id:6, title: 'Saturday'},
+                            {id:7, title: 'Sunday'}
+                       ]"
+                       value="1"
+            ></component>
+        </div>
+    </div>
+
+    <!-- Multiselect with search -->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Multiselect with search</label>
+            <component is="multiselect"
+                       :is-multi="true"
                        :all-values="['One', 'Two', 'Three', 'Four']"
+                       value="One"
+            ></component>
+        </div>
+    </div>
+
+    <!-- Async data from server -->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Async data from server</label>
+            <component is="multiselect"
+                       :is-multi="true"
+                       async-search-url="https://api.mockaroo.com/api/0bb305f0?count=20&key=f2eb7950"
+                       :all-values="['One', 'Two', 'Three', 'Four']"
+                       value="One"
+            ></component>
+            <small class="text-muted">* Unfortunately, the data generation server does not support searching.
+                This search will not work here
+            </small>
+        </div>
+    </div>
+</div>
+
+<div id="vue" class="mt-5">
+    <h3 class="text-center">Remove components</h3>
+    <!-- Simple select -->
+    <div class="row">
+        <div class="col-8 offset-2">
+            <label>Simple select</label>
+            <component is="multiselect"
+                       :all-values="['One', 'Two', 'Three', 'Four','5', '6', '7', '8','9', '10', '11', '12', '13','14', '15', '16', '17']"
                        value="One"
             ></component>
         </div>
@@ -58,6 +158,12 @@
         </div>
     </div>
 
+    <script>
+      var app = new window.Vue({
+        el: "#vue",
+        components: {multiselect: window.VueBootstrapMultiselect}
+      })
+    </script>
 </div>
 <!-- built files will be auto injected -->
 </body>

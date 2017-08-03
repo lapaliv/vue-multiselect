@@ -1,5 +1,9 @@
 <template>
-    <div class="form-control p-0 multiselect">
+    <div class="form-control p-0 multiselect"
+         tabindex="1"
+         @keydown="handleKeyDown"
+         @blur="handleBlur"
+    >
         <component is="tags"
                    :short="shortTags"
                    :options="options"
@@ -11,7 +15,7 @@
                    :is-show-dropdown-list="showDropdownList"
                    :on-show-dropdown-list="handleShowDropdownList"
                    :on-hide-dropdown-list="handleHideDropdownList"
-                   :is-show-search="isSearch && (isMulti || !Object.keys(options).length)"
+                   :is-show-search="showSearch"
         ></component>
         <component is="search"
                    :is-show-dropdown-list="showDropdownList"
@@ -20,7 +24,7 @@
                    :on-hide-dropdown-list="handleHideDropdownList"
                    :placeholder="placeholder"
                    :on-search="handleSearch"
-                   :is-show="isSearch && (isMulti || !Object.keys(options).length)"
+                   :is-show="showSearch"
                    :options-count="options.length"
         ></component>
         <component is="stub"
@@ -29,7 +33,7 @@
                    :on-show-dropdown-list="handleShowDropdownList"
                    :on-hide-dropdown-list="handleHideDropdownList"
                    :placeholder="stubPlaceholder"
-                   :is-show="!!((!isSearch || (!isMulti && Object.keys(options).length)) && !options.length)"
+                   :is-show="showStub"
                    :options-count="options.length"
         ></component>
         <component is="list"
@@ -115,6 +119,12 @@
         }
 
         return results
+      },
+      showSearch () {
+        return !!(this.isSearch && (this.isMulti || !Object.keys(this.options).length))
+      },
+      showStub () {
+        return !!((!this.isSearch || (!this.isMulti && Object.keys(this.options).length)) && !this.options.length)
       }
     },
     methods: {
@@ -162,6 +172,8 @@
           return
         }
 
+        query = query.toLowerCase()
+
         if (this.asyncSearchCallback instanceof Function || this.asyncSearchUrl !== null) {
           this.handleHideDropdownList()
           let $vue = this
@@ -190,7 +202,7 @@
         let results = []
         let options = Object.assign([], this.defaultSearchOptions)
         for (let index = 0; index < options.length; index++) {
-          if (options[index][this.optionTitleName].indexOf(query) !== -1) {
+          if (options[index][this.optionTitleName].toLowerCase().indexOf(query) !== -1) {
             results.push(options[index])
           }
         }
@@ -215,15 +227,30 @@
               if (typeof obj[this.optionKeyName] === 'undefined') {
                 obj[this.optionKeyName] = obj[this.optionTitleName]
               }
+              obj[this.optionKeyName] = Number.isInteger(obj[this.optionKeyName]) ? parseInt(obj[this.optionKeyName]) : obj[this.optionKeyName]
               results.push(obj)
             } else {
-              results.push({
-                [this.optionKeyName]: options[index],
-                [this.optionTitleName]: options[index]
-              })
+              options[index] = Number.isInteger(options[index]) ? parseInt(options[index]) : options[index]
+              let searchInDefaultSearchOptions = false
+              if (this.defaultSearchOptions.length) {
+                for (let itemIndex = 0; itemIndex < this.defaultSearchOptions.length; itemIndex++) {
+                  if (this.defaultSearchOptions[itemIndex][this.optionKeyName] + '' === options[index] + '') {
+                    results.push(this.defaultSearchOptions[itemIndex])
+                    searchInDefaultSearchOptions = true
+                    break
+                  }
+                }
+              }
+              if (!searchInDefaultSearchOptions) {
+                results.push({
+                  [this.optionKeyName]: options[index],
+                  [this.optionTitleName]: options[index]
+                })
+              }
             }
           }
         } else if (typeof options[this.optionKeyName] !== 'undefined' && typeof options[this.optionTitleName] !== 'undefined' && !this.isMulti) {
+          options[this.optionKeyName] = Number.isInteger(options[this.optionKeyName]) ? parseInt(options[this.optionKeyName]) : options[this.optionKeyName]
           let object = {
             [this.optionKeyName]: options[this.optionKeyName],
             [this.optionTitleName]: options[this.optionTitleName]
@@ -234,19 +261,56 @@
           results.push(object)
         } else {
           for (let key in options) {
+            let id = Number.isInteger(key) ? parseInt(key) : key
             results.push({
-              [this.optionKeyName]: key,
+              [this.optionKeyName]: id,
               [this.optionTitleName]: options[key]
             })
           }
         }
 
         return results
+      },
+      getChildrenByName (name) {
+        for (let index = 0; index < this.$children.length; index++) {
+          let child = this.$children[index]
+          if (child.$options._componentTag === name) {
+            return child
+          }
+        }
+
+        return null
+      },
+      handleKeyDown (event) {
+        let dropdown = this.getChildrenByName('list')
+        let search = this.getChildrenByName('search')
+
+        if (event.key === 'ArrowDown') {
+          event.preventDefault()
+          if (!this.showDropdownList) {
+            this.handleShowDropdownList()
+          } else {
+            dropdown.handlePressDown()
+          }
+        } else if (event.key === 'ArrowUp' && this.showDropdownList) {
+          event.preventDefault()
+          dropdown.handlePressUp()
+        } else if (event.key === 'Enter' && this.showDropdownList) {
+          dropdown.handleSelect(dropdown.$options.propsData.options[dropdown._data.hoverIndex], event)
+          if (!this.isMulti) {
+            dropdown._data.hoverIndex = null
+          }
+        } else if (event.key !== 'Tab' && this.showSearch) {
+          search.$refs.input.focus()
+        }
+      },
+      handleBlur (event) {
+        this.handleHideDropdownList()
       }
     },
     mounted () {
-      this.selectedOptions = this.convertOptionsToObjects(this.value)
       this.defaultSearchOptions = this.convertOptionsToObjects(this.allValues)
+      this.selectedOptions = this.convertOptionsToObjects(this.value)
     }
   }
 </script>

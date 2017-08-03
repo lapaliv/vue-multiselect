@@ -1,7 +1,7 @@
 <template>
     <table class="tag rounded" :class="{'w-100': !short, 'mr-2': short, 'mb-2': optionsCount > 1}">
         <tr>
-            <td class="image align-top" v-if="image !== null">
+            <td class="image align-top p-0" v-if="image !== null">
                 <img :src="image" :alt="option[titleName]"/>
             </td>
             <td class="text-left align-middle p-2" :class="{'w-100': !short}">{{ option[titleName] }}</td>
@@ -72,7 +72,7 @@
         border-top-left-radius: 0.25rem;
         text-align: left;
         background: #fff;
-        max-width: 80px;
+        border-right: 3px solid #fff;
     }
 
     .tag .image img {
@@ -80,6 +80,6 @@
         max-height: 50px;
         border-bottom-left-radius: 0.25rem;
         border-top-left-radius: 0.25rem;
-        outline: 3px solid #fff;
+        outline: none;
     }
 </style>

@@ -24,12 +24,6 @@ module.exports = merge(baseWebpackConfig, {
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    // https://github.com/ampedandwired/html-webpack-plugin
-    // new HtmlWebpackPlugin({
-    //   filename: 'index.html',
-    //   template: 'index.html',
-    //   inject: true
-    // }),
 
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
@@ -38,13 +32,6 @@ module.exports = merge(baseWebpackConfig, {
       filename: 'index.html',
       template: 'index.html',
       inject: true,
-      // minify: {
-      //   removeComments: true,
-      //   collapseWhitespace: true,
-      //   removeAttributeQuotes: true
-      //   // more options:
-      //   // https://github.com/kangax/html-minifier#options-quick-reference
-      // },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'
     }),
