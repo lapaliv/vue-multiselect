@@ -1,12 +1,23 @@
 # vue-bootstrap-multiselect
 
-Пакет позволяет заменить стандартные средства выборки элементов с использованием Vue.js 2 и bootstrap 4
+The package may selected (one or many) options from list.
+Developed on Vue.js 2 and Bootstrap 4 without jQuery
 
 #### Demo
 
 [JSFiddle](https://jsfiddle.net/lapaliv/xrezntfx/)
 
-## Установка (Install)
+## Achievements
+
+* Control by keys in keyboard (arrow up/down, enter)
+* Focused by TAB button
+* Simple async-search (by url address) and complex async-search (by callback)
+* Attaching (if you need) inputs to form with selected options
+* Support short and long tags
+* Support objects|array of base types (strings, numbers, etc)|array of objects as value
+* Support images, search/stub, change-callback function, ect...
+
+## Install
 
 ```
 npm install --save vue-bootstrap-multiselect
@@ -24,7 +35,7 @@ Vue.component('multiselect', Multiselect);
 <script type="text/javascript" src="https://unpkg.com/vue-bootstrap-multiselect/dist/vue-bootstrap-multiselect.min.js"></script> 
 ```
 
-## Настройка (Setup)
+## Setup
 
 ```vuejs
 <div id="vue">
@@ -45,25 +56,26 @@ Vue.component('multiselect', Multiselect);
 </script>
 ```
 
-## Атрибуты (Props)
+## Props
 
-| Name                  | Type            | Default         | Description                                                                                                                                                                                    |
-|---------------------- | --------------- | --------------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| name                  | String          | -               | Имя мультиселекта                                                                                                                                                                              |
-| is-multi              | Boolean         | false           | Определяет, можно ли использовать мульти выборку (несколько параметров)                                                                                                                        |
-| stub-placeholder      | String          | Select option   | Placeholder для заглушки (используется вместо строки поиска)                                                                                                                                   |
-| is-search             | Boolean         | true            | Определяет, можно ли выполнять поиск по параметрам мультиселекта при выборке                                                                                                                   |
-| placeholder           | String          | Start typing... | Placeholder для поля поиска                                                                                                                                                                    |
-| async-search-callback | Function        | -               | Callback, контролирующий поиск для мультиселекта                                                                                                                                               |
-| async-search-url      | String          | -               | URL, который ищет и отдает найденные параметры в виде json-строки                                                                                                                              |
-| value                 | Array or Object | []              | Параметры, выбранные по умолчанию (структуру объекта см. ниже)                                                                                                                                 |
-| all-values            | Array or Object | []              | Параметры мультиселекта по умолчанию, из которых можно выбирать (структуру объекта см. ниже)                                                                                                   |
-| option-title-name     | String          | title           | Имя ключа в параметре-объекте, отвечающего за заголовок                                                                                                                                        |
-| option-image-name     | String          | image           | Имя ключа в параметре-объекте, отвечающего за ссылку на изображение                                                                                                                            |
-| option-key-name       | String          | id              | Имя ключа в параметре-объекте, отвечающего за уникальный ключ объекта                                                                                                                          |
-| short-tags            | Boolean         | false           | Определяет, нужно ли отображать выбранные параметры в коротком формате (несколько параметров на одной строке)                                                                                  |
-| attach-input          | Boolean         | false           | Определяет, нужно ли прикреплять input'ы с ключами выбранных параметров. Если мульти выборка поддерживается, то будет создано несколько input'ов с именем name[], где name - имя мультиселекта |
-| on-сhange             | Function        | null            | Callback, вызывается при каждом выборе параметра. Принимает массив из выбранных параметров                                                                                                     |
+| Name                   | Type            | Default         | Description                                               |
+|----------------------- | --------------- | --------------- | ----------------------------------------------------------|
+| name                   | String          | -               | The multiselect name on form                              |
+| is-multi               | Boolean         | false           | Determines whether multiple options can be selected       |
+| stub-placeholder       | String          | Select option   | Placeholder of stub (where search is off)                 |
+| is-search              | Boolean         | true            | Enable or disable searching by list of options            |
+| placeholder            | String          | Start typing... | Placeholder for input search                              |
+| async-search-callback  | Function        | -               | Complex search callback for manual search by query        |
+| async-search-url       | String          | -               | Simple search URL for GET request and pulling JSON string |
+| value                  | Array or Object | []              | Selected options                                          |
+| all-values             | Array or Object | []              | Default options for dropdown list                         |
+| option-title-name      | String          | title           | Name for title field of option                            |
+| option-image-name      | String          | image           | Name for image link field of option                       |
+| option-key-name        | String          | id              | Name for id field of option                               |
+| short-tags             | Boolean         | false           | Enable or disable short tags (default - long tags)        |
+| attach-input           | Boolean         | false           | Enable attached hidden inputs for form                    |
+| on-сhange              | Function        | null            | Selected-callback. Called each time you select options    |
+| no-results-placeholder | String          | No results      | Dropdown list placeholder for empty result                |
 
 ### #attach-input
 

@@ -2,7 +2,6 @@
     <div class="form-control p-0 multiselect"
          tabindex="1"
          @keydown="handleKeyDown"
-         @blur="handleBlur"
     >
         <component is="tags"
                    :short="shortTags"
@@ -72,6 +71,7 @@
       attachInput: {type: Boolean, default: false},
       isMulti: {type: Boolean, default: false},
       isSearch: {type: Boolean, default: true},
+      noResultsPlaceholder: {type: String, default: 'No results'},
       value: {
         type: [Array, Object, String],
         default: function () {
@@ -302,10 +302,9 @@
           }
         } else if (event.key !== 'Tab' && this.showSearch) {
           search.$refs.input.focus()
+        } else if (event.key === 'Tab') {
+          this.handleHideDropdownList()
         }
-      },
-      handleBlur (event) {
-        this.handleHideDropdownList()
       }
     },
     mounted () {

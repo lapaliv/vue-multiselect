@@ -1,7 +1,7 @@
 <template>
     <div class="multiselect-dropdown-list" ref="dropdownList">
         <ul class="list-group mt-1" v-if="show" :style="width === null ? null : ('width:' + width + 'px')">
-            <li class="list-group-item py-2 px-3" v-if="!options.length">No results</li>
+            <li class="list-group-item py-2 px-3" v-if="!options.length">{{ $parent._props.noResultsPlaceholder }}</li>
             <li class="list-group-item"
                 ref="dropdownItem"
                 :class="{'hover': hoverIndex === index, 'p-2': true}"

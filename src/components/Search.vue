@@ -8,7 +8,6 @@
                :placeholder="placeholder"
                @focus="handleInputFocus"
                @click="handleInputFocus"
-               @blur="handleInputBlur"
         />
         <div class="d-flex align-items-center text-center">
             <div v-if="isLoading" class="spinner"></div>
@@ -56,10 +55,6 @@
             $vue.onShowDropdownList()
           }
         }, 0.1)
-      },
-      handleInputBlur (event) {
-        this.onHideDropdownList()
-        this.query = null
       }
     },
     watch: {
