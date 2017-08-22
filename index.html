@@ -3,113 +3,139 @@
 <head>
     <meta charset="utf-8">
     <title>multiselect</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="https://unpkg.com/vue-bootstrap-multiselect@1.0.10/dist/vue-bootstrap-multiselect.min.css" rel="stylesheet" type="text/css">
+    <link href="https://unpkg.com/vue-bootstrap-multiselect@1.0.10/dist/vue-bootstrap-multiselect.min.css"
+          rel="stylesheet" type="text/css">
     <script type="text/javascript" src="https://unpkg.com/vue@2.4.2/dist/vue.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/vue-bootstrap-multiselect@1.0.10/dist/vue-bootstrap-multiselect.min.js"></script>
+    <script type="text/javascript"
+            src="https://unpkg.com/vue-bootstrap-multiselect@1.0.10/dist/vue-bootstrap-multiselect.min.js"></script>
 </head>
 <body style="margin-top: 30px;">
 <div id="app">
     <h3 class="text-center">Local components</h3>
-    <!-- Simple select -->
+
     <div class="row">
-        <div class="col-8 offset-2">
-            <label>Simple select</label>
-            <component is="multiselect"
-                       :all-values="['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']"
-                       value="Thursday"
-                       no-results-placeholder="123"
-            ></component>
+        <div class="col-md-6 ml-auto mr-auto">
+            <div class="form-group">
+                <label>Simple select</label>
+                <component is="multiselect" :default="{
+                                Monday: 'Monday',
+                                Tuesday: 'Tuesday',
+                                Wednesday:'Wednesday',
+                                Thursday: 'Thursday',
+                                Friday: 'Friday',
+                                Saturday: 'Saturday',
+                                Sunday: 'Sunday'
+                            }" :is-multi="false"
+                ></component>
+            </div>
         </div>
     </div>
-    <!-- Simple select with ids -->
     <div class="row">
-        <div class="col-8 offset-2">
-            <label>Simple select as objects</label>
-            <component is="multiselect"
-                       :all-values="[
-                            {id:'monday', title: 'Monday'},
-                            {id:'tuesday', title: 'Tuesday'},
-                            {id:'wednesday', title: 'Wednesday'},
-                            {id:'thursday', title: 'Thursday'},
-                            {id:'friday', title: 'Friday'},
-                            {id:'saturday', title: 'Saturday'},
-                            {id:'sunday', title: 'Sunday'}
+        <div class="col-md-6 ml-auto mr-auto">
+            <div class="form-group">
+                <label>Multiselect</label>
+                <component is="multiselect"
+                           :default="[
+                          {
+                            id: 'Monday',
+                            title: 'Monday'
+                          },
+                          {
+                            id: 'Tuesday',
+                            title: 'Tuesday'
+                          },
+                          {
+                            id: 'Wednesday',
+                            title: 'Wednesday'
+                          },
+                          {
+                            id: 'Thursday',
+                            title: 'Thursday'
+                          },
+                          {
+                            id: 'Friday',
+                            title: 'Friday'
+                          },
+                          {
+                            id: 'Saturday',
+                            title: 'Saturday'
+                          },
+                          {
+                            id: 'Sunday',
+                            title: 'Sunday'
+                          }
                         ]"
-                       value="tuesday"
-            ></component>
+                ></component>
+            </div>
         </div>
     </div>
-
-    <!-- Multiselect -->
     <div class="row">
-        <div class="col-8 offset-2">
-            <label>Multiselect</label>
-            <component is="multiselect"
-                       :is-multi="true"
-                       :is-search="false"
-                       :all-values="[{id:1,title:'Monday'}, 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']"
-                       :value="[1, 'Tuesday']"
-            ></component>
+        <div class="col-md-6 ml-auto mr-auto">
+            <div class="form-group">
+                <label>Multiselect with images</label>
+                <component is="multiselect" :default='[
+                {
+                    title: "Willms Ward",
+                    image: "http://lorempixel.com/640/480/?48501"
+                },
+                {
+                    title: "Wisozk Jamil",
+                    image: "http://lorempixel.com/640/480/?14588"
+                },
+                {
+                    title: "Dicki Watson",
+                    image: "http://lorempixel.com/640/480/?12312"
+                },
+                {
+                    title: "Walter Anabelle",
+                    image: "http://lorempixel.com/640/480/?44901"
+                },
+                {
+                    title: "Deckow Westley",
+                    image: "http://lorempixel.com/640/480/?58855"
+                },
+                {
+                    title: "Williamson Savanna",
+                    image: "http://lorempixel.com/640/480/?81298"
+                },
+                {
+                    title: "Walker Vivienne",
+                    image: "http://lorempixel.com/640/480/?68579"
+                },
+                {
+                    title: "West Mayra",
+                    image: "http://lorempixel.com/640/480/?58994"
+                },
+                {
+                    title: "Windler Braden",
+                    image: "http://lorempixel.com/640/480/?74964"
+                }
+            ]'></component>
+            </div>
         </div>
     </div>
-
-    <!-- Multiselect with ids-->
     <div class="row">
-        <div class="col-8 offset-2">
-            <label>Multiselect as objects</label>
-            <component is="multiselect"
-                       :is-multi="true"
-                       :is-search="false"
-                       :all-values="[
-                            {id:1, title: 'Monday'},
-                            {id:2, title: 'Tuesday'},
-                            {id:3, title: 'Wednesday'},
-                            {id:4, title: 'Thursday'},
-                            {id:5, title: 'Friday'},
-                            {id:6, title: 'Saturday'},
-                            {id:7, title: 'Sunday'}
-                       ]"
-                       value="1"
-            ></component>
-        </div>
-    </div>
-
-    <!-- Multiselect with search -->
-    <div class="row">
-        <div class="col-8 offset-2">
-            <label>Multiselect with search</label>
-            <component is="multiselect"
-                       :is-multi="true"
-                       :all-values="['One', 'Two', 'Three', 'Four']"
-                       value="One"
-            ></component>
-        </div>
-    </div>
-
-    <!-- Async data from server -->
-    <div class="row">
-        <div class="col-8 offset-2">
-            <label>Async data from server</label>
-            <component is="multiselect"
-                       :is-multi="true"
-                       async-search-url="https://api.mockaroo.com/api/0bb305f0?count=20&key=f2eb7950"
-                       :all-values="['One', 'Two', 'Three', 'Four']"
-                       value="One"
-            ></component>
-            <small class="text-muted">* Unfortunately, the data generation server does not support searching.
-                This search will not work here
-            </small>
+        <div class="col-md-6 ml-auto mr-auto">
+            <div class="form-group">
+                <label>Multiselect with async search</label>
+                <component is="multiselect"
+                           async-search-url="https://vue-bootstrap-multiselect.000webhostapp.com/"
+                ></component>
+            </div>
         </div>
     </div>
 </div>
+
+<a href="" style="width: 100px; height: 100px; position: fixed; background: #f00;"></a>
 
 <div id="vue" class="mt-5">
     <h3 class="text-center">Remove components</h3>
     <!-- Simple select -->
     <div class="row">
-        <div class="col-8 offset-2">
+        <div class="col-8 ml-auto mr-auto">
             <label>Simple select</label>
             <component is="multiselect"
                        :all-values="['One', 'Two', 'Three', 'Four','5', '6', '7', '8','9', '10', '11', '12', '13','14', '15', '16', '17']"
@@ -120,7 +146,7 @@
 
     <!-- Multiselect -->
     <div class="row">
-        <div class="col-8 offset-2">
+        <div class="col-8 ml-auto mr-auto">
             <label>Multiselect</label>
             <component is="multiselect"
                        :is-multi="true"
@@ -133,7 +159,7 @@
 
     <!-- Multiselect with search -->
     <div class="row">
-        <div class="col-8 offset-2">
+        <div class="col-8 ml-auto mr-auto">
             <label>Multiselect with search</label>
             <component is="multiselect"
                        :is-multi="true"
@@ -145,7 +171,7 @@
 
     <!-- Async data from server -->
     <div class="row">
-        <div class="col-8 offset-2">
+        <div class="col-8 ml-auto mr-auto">
             <label>Async data from server</label>
             <component is="multiselect"
                        :is-multi="true"
@@ -161,7 +187,7 @@
 
     <script>
       var app = new window.Vue({
-        el: "#vue",
+        el: '#vue',
         components: {multiselect: window.VueBootstrapMultiselect}
       })
     </script>

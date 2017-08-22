@@ -1,1 +1,2 @@
-module.exports = require('./Multiselect.vue')
+'use strict'
+module.exports = require('./plugin.js')
