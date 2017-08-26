@@ -5,17 +5,18 @@
                 <li v-for="(option, key) in options.selected"
                     class="list-group-item individual-item list-group-item-success p-0 d-flex flex-row"
                 >
-                    <img v-if="option instanceof Object && option.hasOwnProperty(optionImageName)"
-                         :src="option[optionImageName]"
-                         :alt="option[optionTitleName]"
+                    <img v-if="option instanceof Object && option.hasOwnProperty(getValue('optionImageName'))"
+                         :src="option[getValue('optionImageName')]"
+                         :alt="option[getValue('optionTitleName')]"
+                         @load="handleLoadOptionImage"
                     />
                     <div class="flex-column flex-wrap py-2 pl-3 align-self-center w-100">
-                        {{ option instanceof Object ? option[optionTitleName] : option }}
+                        {{ option instanceof Object ? option[getValue('optionTitleName')] : option }}
                     </div>
                     <input type="hidden"
-                           v-if="attachInput"
+                           v-if="getValue('attachInput')"
                            :name="name"
-                           :value="option instanceof Object ? (option.hasOwnProperty(optionKeyName) ? option[optionKeyName] : option[optionTitleName]) : option"
+                           :value="option instanceof Object ? (option.hasOwnProperty(getValue('optionKeyName')) ? option[getValue('optionKeyName')] : option[getValue('optionTitleName')]) : option"
                     >
                     <i class="icon-cancel float-right d-flex flex-column m-2 align-self-center"
                        @click="handleClickByDeleteFromSelectedOptions($event, option)"></i>
@@ -23,7 +24,7 @@
             </ul>
             <div class="d-flex flex-row">
                 <input type="text" class="d-inline-block py-1 flex-column border-0"
-                       :placeholder="placeholder"
+                       :placeholder="getValue('placeholder')"
                        v-model="query"
                        ref="input"
                        tabindex="-1"
@@ -37,7 +38,7 @@
                    class="icon-spin1 animate-spin float-right d-flex flex-column mx-2 my-1 align-self-center"></i>
             </div>
         </div>
-        <div v-if="isShowDropdownList" ref="dropdownList" class="mt-1 dropdown-list" :style="{width: dropdownWidth}">
+        <div v-show="isShowDropdownList" ref="dropdownList" class="mt-1 dropdown-list" :style="{width: dropdownWidth}">
             <ul class="list-group">
                 <li v-for="(option, index) in dropdownOptions"
                     @click="handleSelectDropdownOption($event, option)"
@@ -47,13 +48,13 @@
                 >
                     <img v-if="option instanceof Object && option.hasOwnProperty(optionImageName)"
                          class="mr-2"
-                         :src="option[optionImageName]"
-                         :alt="option[optionTitleName]"
+                         :src="option[getValue('optionImageName')]"
+                         :alt="option[getValue('optionTitleName')]"
                     />
-                    {{ option instanceof Object ? option[optionTitleName] : option }}
+                    {{ option instanceof Object ? option[getValue('optionTitleName')] : option }}
                 </li>
                 <li v-if="!Object.keys(dropdownOptions).length" class="list-group-item text-muted py-2 px-3">
-                    Ничего не найдено. Вы можете создать <a href="">Тут текст ввода</a>
+                    {{ getValue('noResultsText') }}
                 </li>
             </ul>
         </div>
@@ -76,7 +77,7 @@
       // attach input type hidden for send forms
       attachInput: {
         type: Boolean,
-        'default': true
+        'default': null
       },
       name: {
         type: String,
@@ -84,19 +85,19 @@
       },
       isMulti: {
         type: Boolean,
-        'default': true
+        'default': null
       },
       optionKeyName: {
         type: String,
-        'default': 'id'
+        'default': null
       },
       optionTitleName: {
         type: String,
-        'default': 'title'
+        'default': null
       },
       optionImageName: {
         type: String,
-        'default': 'image'
+        'default': null
       },
       asyncSearchCallback: {
         type: Function,
@@ -108,7 +109,11 @@
       },
       placeholder: {
         type: String,
-        'default': 'Start typing...'
+        'default': null
+      },
+      noResultsText: {
+        type: String,
+        'default': null
       },
       value: {
         type: [String, Object, Array, null],
@@ -133,7 +138,8 @@
         dropdownHoverIndex: -1,
         dropdownDefaultTop: null,
         dropdownTop: null,
-        dropdownBoxShadow: null
+        dropdownBoxShadow: null,
+        dropdownWidth: '100%'
       }
     },
     computed: {
@@ -142,7 +148,9 @@
         let options = this.options.searchMode ? this.options.search : this.options.default
 
         for (let key in options) {
-          let title = options[key] instanceof Object ? options[key][this.optionTitleName] : options[key]
+          let title = options[key] instanceof Object
+            ? options[key][this.getValue('optionTitleName')]
+            : options[key]
 
           let queryIsEmpty = !this.query.length
           let titleIsFind = title.toLowerCase().indexOf(this.query.toLowerCase()) !== -1
@@ -152,9 +160,9 @@
             let searchInSelected = false
             for (let index in this.options.selected) {
               let selectedTitle = this.options.selected[index] instanceof Object
-                ? this.options.selected[index][this.optionTitleName]
+                ? this.options.selected[index][this.getValue('optionTitleName')]
                 : this.options.selected[index]
-              if (queryIsEmpty || selectedTitle.toLowerCase() === title.toLowerCase()) {
+              if (selectedTitle.toLowerCase() === title.toLowerCase()) {
                 searchInSelected = true
                 break
               }
@@ -166,9 +174,6 @@
         }
 
         return results
-      },
-      dropdownWidth () {
-        return this.$refs.select.offsetWidth + 'px'
       }
     },
     methods: {
@@ -195,13 +200,13 @@
       },
       handleSelectDropdownOption (event, option) {
         let selectedOptions = Object.assign([], this.options.selected)
-        if (this.isMulti) {
+        if (this.getValue('isMulti')) {
           selectedOptions.push(option)
         } else {
           selectedOptions = [option]
         }
         this.setOptions('selected', selectedOptions)
-        if (Object.keys(this.dropdownOptions).length && this.isMulti) {
+        if (Object.keys(this.dropdownOptions).length && this.getValue('isMulti')) {
           event.stopPropagation()
         }
       },
@@ -248,7 +253,7 @@
           }
         } else if (event.key === 'Enter' && this.isShowDropdownList && Object.keys(this.dropdownOptions).length) {
           this.handleSelectDropdownOption(event, this.dropdownOptions[this.dropdownHoverIndex])
-          if (!this.isMulti) {
+          if (!this.getValue('isMulti')) {
             this.hideDropdownList()
           }
           this.dropdownHoverIndex = 0
@@ -309,6 +314,14 @@
           this.$refs.dropdownList.style.top = this.dropdownTop + 'px'
           this.$refs.dropdownList.style.boxShadow = this.dropdownBoxShadow
         }
+      },
+      handleLoadOptionImage () {
+        this.computedDropdownTop()
+      },
+      getValue (name) {
+        return this[name] === null
+          ? this.$multiselectGlobalOptions[name]
+          : this[name]
       }
     },
     watch: {
@@ -328,13 +341,13 @@
       isShowDropdownList (show) {
         if (show) {
           this.computedDropdownTop()
+          this.dropdownWidth = this.$refs.select.offsetWidth + 'px'
         }
       }
     },
     created () {
       let $vue = this
       let options = Object.assign({}, $vue.options)
-
       options.default = $vue.default
       $vue.options = options
 
