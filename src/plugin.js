@@ -10,7 +10,9 @@ const install = function (Vue, options) {
     optionTitleName: 'title',
     optionImageName: 'image',
     placeholder: 'Start typing...',
-    noResultsText: 'No results'
+    noResultsText: 'No results',
+    isSearch: true,
+    stubText: 'Select an item'
   }, options)
 }
 

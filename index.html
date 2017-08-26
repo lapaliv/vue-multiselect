@@ -19,7 +19,9 @@
     <div class="row">
         <div class="col-md-6 ml-auto mr-auto">
             <div class="form-group">
+                <input type="text" class="form-control" disabled placeholder="132">
                 <label>Simple select</label>
+                <div @click="disabled0 = !disabled0">click</div>
                 <component is="multiselect" :default="{
                                 Monday: 'Monday',
                                 Tuesday: 'Tuesday',
@@ -29,6 +31,10 @@
                                 Saturday: 'Saturday',
                                 Sunday: 'Sunday'
                             }" :is-multi="false"
+                           v-model="model0"
+                           :attach-input="true"
+                           name="model0"
+                           :disabled="disabled0"
                 ></component>
             </div>
         </div>
@@ -38,6 +44,7 @@
             <div class="form-group">
                 <label>Multiselect</label>
                 <component is="multiselect"
+                           :is-search="false"
                            :default="[
                           {
                             id: 'Monday',
@@ -68,6 +75,9 @@
                             title: 'Sunday'
                           }
                         ]"
+                           @change="handleChangeModel1"
+                           name="model1"
+                           :attach-input="true"
                 ></component>
             </div>
         </div>
@@ -113,7 +123,7 @@
                     title: "Windler Braden",
                     image: "http://lorempixel.com/640/480/?74964"
                 }
-            ]'></component>
+            ]' v-model="model2"></component>
             </div>
         </div>
     </div>
@@ -123,6 +133,46 @@
                 <label>Multiselect with async search</label>
                 <component is="multiselect"
                            async-search-url="https://vue-bootstrap-multiselect.000webhostapp.com/"
+                           v-model="model3"
+                ></component>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Value is null</label>
+                <component is="multiselect" :default="{
+                                Monday: 'Monday',
+                                Tuesday: 'Tuesday',
+                                Wednesday:'Wednesday',
+                                Thursday: 'Thursday',
+                                Friday: 'Friday',
+                                Saturday: 'Saturday',
+                                Sunday: 'Sunday'
+                            }"
+                           :is-multi="false"
+                           :value="null"
+                ></component>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Disabled</label>
+                <component is="multiselect" :default="{
+                                Monday: 'Monday',
+                                Tuesday: 'Tuesday',
+                                Wednesday:'Wednesday',
+                                Thursday: 'Thursday',
+                                Friday: 'Friday',
+                                Saturday: 'Saturday',
+                                Sunday: 'Sunday'
+                            }"
+                           :is-multi="false"
+                           :disabled="true"
+                           value="123"
                 ></component>
             </div>
         </div>

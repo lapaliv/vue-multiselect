@@ -9,5 +9,19 @@ Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app'
+  el: '#app',
+  data () {
+    return {
+      model0: null,
+      model1: null,
+      model2: null,
+      model3: null,
+      disabled0: false
+    }
+  },
+  methods: {
+    handleChangeModel1 (event) {
+      console.log(event)
+    }
+  }
 })

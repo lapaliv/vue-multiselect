@@ -1,41 +1,20 @@
 <template>
     <div>
-        <div tabindex="0" class="form-control multiselect py-1 pr-1" ref="select" @keydown="handleKeyDown">
-            <ul class="list-group mb-2 mt-1 mr-2" v-if="options.selected.length">
-                <li v-for="(option, key) in options.selected"
-                    class="list-group-item individual-item list-group-item-success p-0 d-flex flex-row"
-                >
-                    <img v-if="option instanceof Object && option.hasOwnProperty(getValue('optionImageName'))"
-                         :src="option[getValue('optionImageName')]"
-                         :alt="option[getValue('optionTitleName')]"
-                         @load="handleLoadOptionImage"
-                    />
-                    <div class="flex-column flex-wrap py-2 pl-3 align-self-center w-100">
-                        {{ option instanceof Object ? option[getValue('optionTitleName')] : option }}
-                    </div>
-                    <input type="hidden"
-                           v-if="getValue('attachInput')"
-                           :name="name"
-                           :value="option instanceof Object ? (option.hasOwnProperty(getValue('optionKeyName')) ? option[getValue('optionKeyName')] : option[getValue('optionTitleName')]) : option"
-                    >
-                    <i class="icon-cancel float-right d-flex flex-column m-2 align-self-center"
-                       @click="handleClickByDeleteFromSelectedOptions($event, option)"></i>
-                </li>
-            </ul>
-            <div class="d-flex flex-row">
-                <input type="text" class="d-inline-block py-1 flex-column border-0"
-                       :placeholder="getValue('placeholder')"
-                       v-model="query"
-                       ref="input"
-                       tabindex="-1"
-                       @focus="handleFocusInput"
-                >
-                <i v-if="!options.isLoading" class="mx-2 my-1 flex-column"
-                   :class="{'icon-angle-down': !isShowDropdownList, 'icon-angle-up': isShowDropdownList}"
-                   @click="handleClickByCaret"
-                ></i>
-                <i v-else
-                   class="icon-spin1 animate-spin float-right d-flex flex-column mx-2 my-1 align-self-center"></i>
+        <div tabindex="0" class="form-control multiselect py-1 pr-1" @keydown="handleKeyDown"
+             :class="{'disabled': disabled}"
+        >
+            <div v-if="showInput">
+                <component is="selectedOptions"></component>
+                <div class="d-flex flex-row" :class="{'mt-2': Object.keys(options.selected).length}">
+                    <component is="searchOrStub" ref="input"></component>
+                    <component is="caretAndSpin"></component>
+                </div>
+            </div>
+            <div class="d-flex flex-row" v-else>
+                <component is="searchOrStub" ref="input"
+                           v-if="isMulti || !Object.keys(options.selected).length"></component>
+                <component is="selectedOptions" class="w-100"></component>
+                <component is="caretAndSpin"></component>
             </div>
         </div>
         <div v-show="isShowDropdownList" ref="dropdownList" class="mt-1 dropdown-list" :style="{width: dropdownWidth}">
@@ -46,7 +25,7 @@
                     class="list-group-item py-1 px-3"
                     :class="{'bg-light': dropdownHoverIndex === index}"
                 >
-                    <img v-if="option instanceof Object && option.hasOwnProperty(optionImageName)"
+                    <img v-if="option instanceof Object && option.hasOwnProperty(getValue('optionImageName'))"
                          class="mr-2"
                          :src="option[getValue('optionImageName')]"
                          :alt="option[getValue('optionTitleName')]"
@@ -63,8 +42,12 @@
 
 <script>
   import axios from 'axios'
+  import selectedOptions from './components/selectedOptions.vue'
+  import caretAndSpin from './components/caretAndSpin.vue'
+  import searchOrStub from './components/searchOrStub.vue'
 
   export default {
+    components: {selectedOptions, caretAndSpin, searchOrStub},
     name: 'vue-bootstrap-multiselect',
     props: {
       // Default options
@@ -122,6 +105,18 @@
       allValues: {
         type: Array,
         'default': null
+      },
+      isSearch: {
+        type: Boolean,
+        'default': null
+      },
+      stubText: {
+        type: String,
+        'default': null
+      },
+      disabled: {
+        type: Boolean,
+        'default': false
       }
     },
     data () {
@@ -174,23 +169,30 @@
         }
 
         return results
+      },
+      showInput () {
+        return this.getValue('isSearch') && (!Object.keys(this.options.selected).length || this.getValue('isMulti'))
       }
     },
     methods: {
       showDropdownList () {
-        this.isShowDropdownList = true
+        if (!this.disabled) {
+          this.isShowDropdownList = true
+        }
       },
       hideDropdownList () {
         this.isShowDropdownList = false
       },
       handleClickByCaret (event) {
-        if (!this.isShowDropdownList) {
-          let $vue = this
-          setTimeout(function () {
-            $vue.showDropdownList()
-          }, 100)
-        } else {
-          this.hideDropdownList()
+        if (!this.disabled) {
+          if (!this.isShowDropdownList) {
+            let $vue = this
+            setTimeout(function () {
+              $vue.showDropdownList()
+            }, 100)
+          } else {
+            this.hideDropdownList()
+          }
         }
       },
       setOptions (type, data) {
@@ -199,25 +201,29 @@
         this.options = options
       },
       handleSelectDropdownOption (event, option) {
-        let selectedOptions = Object.assign([], this.options.selected)
-        if (this.getValue('isMulti')) {
-          selectedOptions.push(option)
-        } else {
-          selectedOptions = [option]
-        }
-        this.setOptions('selected', selectedOptions)
-        if (Object.keys(this.dropdownOptions).length && this.getValue('isMulti')) {
-          event.stopPropagation()
+        if (!this.disabled) {
+          let selectedOptions = Object.assign([], this.options.selected)
+          if (this.getValue('isMulti')) {
+            selectedOptions.push(option)
+          } else {
+            selectedOptions = [option]
+          }
+          this.setOptions('selected', selectedOptions)
+          if (Object.keys(this.dropdownOptions).length && this.getValue('isMulti')) {
+            event.stopPropagation()
+          }
         }
       },
       handleClickByDeleteFromSelectedOptions ($event, option) {
-        let results = []
-        for (let index = 0; index < this.options.selected.length; index++) {
-          if (this.options.selected[index] !== option) {
-            results.push(this.options.selected[index])
+        if (!this.disabled) {
+          let results = []
+          for (let index = 0; index < this.options.selected.length; index++) {
+            if (this.options.selected[index] !== option) {
+              results.push(this.options.selected[index])
+            }
           }
+          this.setOptions('selected', results)
         }
-        this.setOptions('selected', results)
       },
       handleKeyDown (event) {
         if (event.key === 'ArrowDown') {
@@ -225,7 +231,7 @@
           if (this.isShowDropdownList) {
             let search = false
             for (let key in this.dropdownOptions) {
-              if (!search && this.dropdownHoverIndex === -1) {
+              if (!search && this.dropdownHoverIndex <= 0) {
                 this.dropdownHoverIndex = key
                 break
               } else if (!search && this.dropdownHoverIndex === key) {
@@ -257,8 +263,8 @@
             this.hideDropdownList()
           }
           this.dropdownHoverIndex = 0
-        } else if (event.key !== 'Tab') {
-          this.$refs.input.focus()
+        } else if (event.key !== 'Tab' && this.$refs.input && this.$refs.input.$refs.input) {
+          this.$refs.input.$refs.input.focus()
         } else if (event.key === 'Tab') {
           this.hideDropdownList()
         }
@@ -267,7 +273,7 @@
         let $vue = this
         setTimeout(function () {
           $vue.showDropdownList()
-          $vue.$refs.select.focus()
+          $vue.$el.focus()
         }, 150)
       },
       asyncSearch (query) {
@@ -296,23 +302,18 @@
         }
       },
       computedDropdownTop () {
-        if (this.isShowDropdownList && this.$refs.dropdownList) {
-          let selectPosition = this.$refs.select.getBoundingClientRect()
-          this.dropdownDefaultTop = this.dropdownDefaultTop || this.$refs.dropdownList.offsetTop
-          let dropdownIsLong = selectPosition.top + this.$refs.select.offsetHeight + this.$refs.dropdownList.offsetHeight > window.innerHeight
+        if (typeof window === 'undefined' || typeof this.$refs.dropdownList === 'undefined') {
+          return
+        }
 
-          if (dropdownIsLong && this.$refs.select.offsetHeight < window.innerHeight / 2) {
-            this.dropdownTop = (this.$refs.dropdownList.offsetHeight - 25) * -1
-            this.dropdownBoxShadow = '0 0px 10px rgba(0, 0, 0, .3)'
-          } else {
-            this.dropdownTop = this.dropdownTop < 0
-              ? this.dropdownDefaultTop
-              : this.$refs.select.offsetHeight + 35
-            this.dropdownBoxShadow = '0 5px 10px rgba(0, 0, 0, .3)'
-          }
+        const spaceAbove = this.$el.getBoundingClientRect().top
+        const spaceBelow = window.innerHeight - this.$el.getBoundingClientRect().bottom
+        const hasEnoughSpaceBelow = spaceBelow > 250
 
-          this.$refs.dropdownList.style.top = this.dropdownTop + 'px'
-          this.$refs.dropdownList.style.boxShadow = this.dropdownBoxShadow
+        if (hasEnoughSpaceBelow || spaceBelow > spaceAbove) {
+          this.$refs.dropdownList.style.bottom = null
+        } else {
+          this.$refs.dropdownList.style.bottom = '100%'
         }
       },
       handleLoadOptionImage () {
@@ -322,6 +323,28 @@
         return this[name] === null
           ? this.$multiselectGlobalOptions[name]
           : this[name]
+      },
+      getResultValue (selectedOptions) {
+        let options = Object.assign([], selectedOptions)
+        let modifyOptions = []
+
+        for (let index in options) {
+          if (options[index] instanceof Object) {
+            let keyName = this.getValue('optionKeyName')
+            let titleName = this.getValue('optionTitleName')
+            modifyOptions.push(options[index].hasOwnProperty(keyName) ? options[index][keyName] : options[index][titleName])
+          } else {
+            modifyOptions.push(options[index])
+          }
+        }
+
+        if (this.getValue('isMulti')) {
+          return modifyOptions
+        } else if (modifyOptions.length) {
+          return modifyOptions[0]
+        }
+
+        return null
       }
     },
     watch: {
@@ -341,7 +364,34 @@
       isShowDropdownList (show) {
         if (show) {
           this.computedDropdownTop()
-          this.dropdownWidth = this.$refs.select.offsetWidth + 'px'
+          this.dropdownWidth = this.$el.offsetWidth + 'px'
+        }
+      },
+      value (value) {
+        let resultValue = this.getResultValue(this.options.selected)
+        let isUpdated = false
+        if (Array.isArray(value) && Array.isArray(resultValue) && value.length === resultValue.length) {
+          for (let index = 0; index < value.length; index++) {
+            if (resultValue.indexOf(value[index]) === -1) {
+              isUpdated = true
+              break
+            }
+          }
+        } else {
+          isUpdated = true
+        }
+
+        if (isUpdated) {
+          let options = Object.assign([], this.options)
+          options.selected = Array.isArray(value) ? value : (value === null ? [] : [value])
+          this.options = options
+        }
+      },
+      options (newValue, oldValue) {
+        if (newValue.selected !== oldValue.selected) {
+          let result = this.getResultValue(newValue.selected)
+          this.$emit('input', result)
+          this.$emit('change', result)
         }
       }
     },
@@ -411,7 +461,7 @@
         border-bottom-left-radius: .25rem;
     }
 
-    input {
+    .multiselect input {
         outline: none;
         font-size: 1rem;
         line-height: 1.25;
@@ -423,9 +473,30 @@
         width: calc(100% - 25px);
     }
 
-    .icon-cancel:hover, .icon-angle-down:hover, .icon-angle-up:hover {
+    .multiselect input::placeholder, .multiselect .stub {
+        color: rgb(135, 142, 149);
+    }
+
+    .multiselect.disabled input {
+        background-color: #e9ecef;
+    }
+
+    .multiselect [class^="icon-"]:hover {
         opacity: 0.8;
         cursor: pointer;
+    }
+
+    .multiselect.disabled [class^="icon-"]:hover {
+        opacity: 1;
+        cursor: default;
+    }
+
+    .multiselect.disabled {
+        opacity: 1;
+        cursor: default !important;
+        outline: none !important;
+        border: 1px solid rgba(0, 0, 0, .15);
+        background-color: #e9ecef;
     }
 
     .dropdown-list {
@@ -438,5 +509,9 @@
         -moz-user-select: none;
         -ms-user-select: none;
         -webkit-user-select: none;
+    }
+
+    .list-group-item.bg-light {
+        cursor: pointer;
     }
 </style>
