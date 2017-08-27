@@ -191,11 +191,9 @@ export default {
         return
       }
 
-      const spaceAbove = this.$el.getBoundingClientRect().top
-      const spaceBelow = window.innerHeight - this.$el.getBoundingClientRect().bottom
-      const hasEnoughSpaceBelow = spaceBelow > 250
+      const bottomSpace = window.innerHeight - this.$el.getBoundingClientRect().bottom
 
-      if (hasEnoughSpaceBelow || spaceBelow > spaceAbove) {
+      if (bottomSpace > 250 || bottomSpace > this.$el.getBoundingClientRect().top) {
         this.$refs.dropdownList.style.bottom = null
       } else {
         this.$refs.dropdownList.style.bottom = 'calc(100% - 24px)'
