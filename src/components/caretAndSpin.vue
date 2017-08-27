@@ -3,15 +3,15 @@
        :class="{
         'icon-angle-down': !isShowDropdownList,
         'icon-angle-up': isShowDropdownList,
-        'align-self-center': Object.keys(options.selected).length <= 1,
-        'align-self-end mb-2': Object.keys(options.selected).length > 1
+        'align-self-center': $parent.countSelectedOptions <= 1,
+        'align-self-end mb-2': $parent.countSelectedOptions > 1
        }"
        @click="$parent.handleClickByCaret"
     ></i>
     <i class="icon-spin1 animate-spin float-right d-flex flex-column mx-2 my-1"
        :class="{
-        'align-self-center': Object.keys(options.selected).length <= 1,
-        'align-self-end mb-2': Object.keys(options.selected).length > 1
+        'align-self-center': $parent.countSelectedOptions <= 1,
+        'align-self-end mb-2': $parent.countSelectedOptions > 1
        }"
        v-else></i>
 </template>

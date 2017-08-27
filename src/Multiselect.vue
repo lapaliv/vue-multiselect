@@ -1,18 +1,15 @@
 <template>
     <div>
-        <div tabindex="0" class="form-control multiselect py-1 pr-1" @keydown="handleKeyDown"
-             :class="{'disabled': disabled}"
-        >
+        <div :tabindex="disabled ? null : 0" :class="className" @keydown="handleKeyDown">
             <div v-if="showInput">
                 <component is="selectedOptions"></component>
-                <div class="d-flex flex-row" :class="{'mt-2': Object.keys(options.selected).length}">
+                <div class="d-flex flex-row" :class="{'mt-2': countSelectedOptions}">
                     <component is="searchOrStub" ref="input"></component>
                     <component is="caretAndSpin"></component>
                 </div>
             </div>
             <div class="d-flex flex-row" v-else>
-                <component is="searchOrStub" ref="input"
-                           v-if="isMulti || !Object.keys(options.selected).length"></component>
+                <component is="searchOrStub" ref="input" v-if="showSearchOrStub"></component>
                 <component is="selectedOptions" class="w-100"></component>
                 <component is="caretAndSpin"></component>
             </div>
@@ -25,15 +22,14 @@
                     class="list-group-item py-1 px-3"
                     :class="{'bg-light': dropdownHoverIndex === index}"
                 >
-                    <img v-if="option instanceof Object && option.hasOwnProperty(getValue('optionImageName'))"
-                         class="mr-2"
-                         :src="option[getValue('optionImageName')]"
-                         :alt="option[getValue('optionTitleName')]"
+                    <img v-if="getOptionImage(option)" class="mr-2"
+                         :src="getOptionImage(option)"
+                         :alt="getOptionTitle(option)"
                     />
-                    {{ option instanceof Object ? option[getValue('optionTitleName')] : option }}
+                    {{ getOptionTitle(option) }}
                 </li>
-                <li v-if="!Object.keys(dropdownOptions).length" class="list-group-item text-muted py-2 px-3">
-                    {{ getValue('noResultsText') }}
+                <li v-if="showDropdownNoResults" class="list-group-item text-muted py-2 px-3">
+                    {{ getProp('noResultsText') }}
                 </li>
             </ul>
         </div>
@@ -41,13 +37,14 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import selectedOptions from './components/selectedOptions.vue'
   import caretAndSpin from './components/caretAndSpin.vue'
   import searchOrStub from './components/searchOrStub.vue'
+  import mixin from './mixins/MultiselectMixin'
 
   export default {
     components: {selectedOptions, caretAndSpin, searchOrStub},
+    mixins: [mixin],
     name: 'vue-bootstrap-multiselect',
     props: {
       // Default options
@@ -119,322 +116,22 @@
         'default': false
       }
     },
-    data () {
-      return {
-        isShowDropdownList: false,
-        query: '',
-        options: {
-          selected: [],
-          search: [],
-          searchMode: false,
-          isLoading: false,
-          'default': []
-        },
-        dropdownHoverIndex: -1,
-        dropdownDefaultTop: null,
-        dropdownTop: null,
-        dropdownBoxShadow: null,
-        dropdownWidth: '100%'
-      }
-    },
     computed: {
-      dropdownOptions () {
-        let results = {}
-        let options = this.options.searchMode ? this.options.search : this.options.default
-
-        for (let key in options) {
-          let title = options[key] instanceof Object
-            ? options[key][this.getValue('optionTitleName')]
-            : options[key]
-
-          let queryIsEmpty = !this.query.length
-          let titleIsFind = title.toLowerCase().indexOf(this.query.toLowerCase()) !== -1
-          let optionHasNotInSelected = this.options.selected.indexOf(options[key]) === -1
-
-          if ((queryIsEmpty || titleIsFind) && optionHasNotInSelected) {
-            let searchInSelected = false
-            for (let index in this.options.selected) {
-              let selectedTitle = this.options.selected[index] instanceof Object
-                ? this.options.selected[index][this.getValue('optionTitleName')]
-                : this.options.selected[index]
-              if (selectedTitle.toLowerCase() === title.toLowerCase()) {
-                searchInSelected = true
-                break
-              }
-            }
-            if (!searchInSelected) {
-              results[key] = options[key]
-            }
-          }
+      className () {
+        return {
+          'form-control multiselect py-1 pr-1': true,
+          'disabled': this.disabled
         }
-
-        return results
+      },
+      showSearchOrStub () {
+        return !this.countSelectedOptions || this.getProp('isSearch')
+      },
+      showDropdownNoResults () {
+        return !Object.keys(this.dropdownOptions).length
       },
       showInput () {
-        return this.getValue('isSearch') && (!Object.keys(this.options.selected).length || this.getValue('isMulti'))
+        return this.getProp('isSearch')
       }
-    },
-    methods: {
-      showDropdownList () {
-        if (!this.disabled) {
-          this.isShowDropdownList = true
-        }
-      },
-      hideDropdownList () {
-        this.isShowDropdownList = false
-      },
-      handleClickByCaret (event) {
-        if (!this.disabled) {
-          if (!this.isShowDropdownList) {
-            let $vue = this
-            setTimeout(function () {
-              $vue.showDropdownList()
-            }, 100)
-          } else {
-            this.hideDropdownList()
-          }
-        }
-      },
-      setOptions (type, data) {
-        let options = Object.assign({}, this.options)
-        options[type] = Object.assign([], data)
-        this.options = options
-      },
-      handleSelectDropdownOption (event, option) {
-        if (!this.disabled) {
-          let selectedOptions = Object.assign([], this.options.selected)
-          if (this.getValue('isMulti')) {
-            selectedOptions.push(option)
-          } else {
-            selectedOptions = [option]
-          }
-          this.setOptions('selected', selectedOptions)
-          if (Object.keys(this.dropdownOptions).length && this.getValue('isMulti')) {
-            event.stopPropagation()
-          }
-        }
-      },
-      handleClickByDeleteFromSelectedOptions ($event, option) {
-        if (!this.disabled) {
-          let results = []
-          for (let index = 0; index < this.options.selected.length; index++) {
-            if (this.options.selected[index] !== option) {
-              results.push(this.options.selected[index])
-            }
-          }
-          this.setOptions('selected', results)
-        }
-      },
-      handleKeyDown (event) {
-        if (event.key === 'ArrowDown') {
-          event.preventDefault()
-          if (this.isShowDropdownList) {
-            let search = false
-            for (let key in this.dropdownOptions) {
-              if (!search && this.dropdownHoverIndex <= 0) {
-                this.dropdownHoverIndex = key
-                break
-              } else if (!search && this.dropdownHoverIndex === key) {
-                search = true
-              } else if (search) {
-                this.dropdownHoverIndex = key
-                break
-              }
-            }
-          } else {
-            this.showDropdownList()
-          }
-        } else if (event.key === 'ArrowUp') {
-          if (this.isShowDropdownList) {
-            event.preventDefault()
-            let oldIndex = -1
-            for (let key in this.dropdownOptions) {
-              if (this.dropdownHoverIndex === key) {
-                this.dropdownHoverIndex = oldIndex
-                break
-              }
-              oldIndex = key
-            }
-            this.dropdownHoverIndex === -1 ? this.hideDropdownList() : null
-          }
-        } else if (event.key === 'Enter' && this.isShowDropdownList && Object.keys(this.dropdownOptions).length) {
-          this.handleSelectDropdownOption(event, this.dropdownOptions[this.dropdownHoverIndex])
-          if (!this.getValue('isMulti')) {
-            this.hideDropdownList()
-          }
-          this.dropdownHoverIndex = 0
-        } else if (event.key !== 'Tab' && this.$refs.input && this.$refs.input.$refs.input) {
-          this.$refs.input.$refs.input.focus()
-        } else if (event.key === 'Tab') {
-          this.hideDropdownList()
-        }
-      },
-      handleFocusInput (event) {
-        let $vue = this
-        setTimeout(function () {
-          $vue.showDropdownList()
-          $vue.$el.focus()
-        }, 150)
-      },
-      asyncSearch (query) {
-        let promise = null
-        if (this.asyncSearchCallback) {
-          promise = this.asyncSearchCallback(query)
-        } else if (this.asyncSearchUrl) {
-          promise = axios.get(this.asyncSearchUrl + (this.asyncSearchUrl.indexOf('?') === -1 ? '?' : '&') + 'query=' + query)
-        }
-
-        if (promise) {
-          this.options.isLoading = true
-          let options = Object.assign({}, this.options)
-          promise.then((res) => {
-            options.search = res.data
-            options.searchMode = true
-            options.isLoading = false
-            this.options = options
-            this.showDropdownList()
-          }).catch((res) => {
-            options.searchMode = true
-            options.isLoading = false
-            this.options = options
-            this.showDropdownList()
-          })
-        }
-      },
-      computedDropdownTop () {
-        if (typeof window === 'undefined' || typeof this.$refs.dropdownList === 'undefined') {
-          return
-        }
-
-        const spaceAbove = this.$el.getBoundingClientRect().top
-        const spaceBelow = window.innerHeight - this.$el.getBoundingClientRect().bottom
-        const hasEnoughSpaceBelow = spaceBelow > 250
-
-        if (hasEnoughSpaceBelow || spaceBelow > spaceAbove) {
-          this.$refs.dropdownList.style.bottom = null
-        } else {
-          this.$refs.dropdownList.style.bottom = '100%'
-        }
-      },
-      handleLoadOptionImage () {
-        this.computedDropdownTop()
-      },
-      getValue (name) {
-        return this[name] === null
-          ? this.$multiselectGlobalOptions[name]
-          : this[name]
-      },
-      getResultValue (selectedOptions) {
-        let options = Object.assign([], selectedOptions)
-        let modifyOptions = []
-
-        for (let index in options) {
-          if (options[index] instanceof Object) {
-            let keyName = this.getValue('optionKeyName')
-            let titleName = this.getValue('optionTitleName')
-            modifyOptions.push(options[index].hasOwnProperty(keyName) ? options[index][keyName] : options[index][titleName])
-          } else {
-            modifyOptions.push(options[index])
-          }
-        }
-
-        if (this.getValue('isMulti')) {
-          return modifyOptions
-        } else if (modifyOptions.length) {
-          return modifyOptions[0]
-        }
-
-        return null
-      }
-    },
-    watch: {
-      query (query) {
-        if (query.length) {
-          if (this.asyncSearchCallback || this.asyncSearchUrl) {
-            this.asyncSearch(this.query)
-          } else {
-            this.showDropdownList()
-            this.dropdownHoverIndex = 0
-          }
-        } else {
-          this.hideDropdownList()
-          this.options.searchMode = false
-        }
-      },
-      isShowDropdownList (show) {
-        if (show) {
-          this.computedDropdownTop()
-          this.dropdownWidth = this.$el.offsetWidth + 'px'
-        }
-      },
-      value (value) {
-        let resultValue = this.getResultValue(this.options.selected)
-        let isUpdated = false
-        if (Array.isArray(value) && Array.isArray(resultValue) && value.length === resultValue.length) {
-          for (let index = 0; index < value.length; index++) {
-            if (resultValue.indexOf(value[index]) === -1) {
-              isUpdated = true
-              break
-            }
-          }
-        } else {
-          isUpdated = true
-        }
-
-        if (isUpdated) {
-          let options = Object.assign([], this.options)
-          options.selected = Array.isArray(value) ? value : (value === null ? [] : [value])
-          this.options = options
-        }
-      },
-      options (newValue, oldValue) {
-        if (newValue.selected !== oldValue.selected) {
-          let result = this.getResultValue(newValue.selected)
-          this.$emit('input', result)
-          this.$emit('change', result)
-        }
-      }
-    },
-    created () {
-      let $vue = this
-      let options = Object.assign({}, $vue.options)
-      options.default = $vue.default
-      $vue.options = options
-
-      document.addEventListener('click', function () {
-        setTimeout(function () {
-          $vue.hideDropdownList()
-        }, 0.1)
-      })
-
-      // Заполняем выбранные значения
-      if (this.value) {
-        let options = Object.assign({}, this.options)
-        if (Array.isArray(this.value)) {
-          options.selected = Object.assign([], this.value)
-        } else {
-          options.selected = [this.value]
-        }
-        this.options = options
-      }
-
-      // Заполняем значения по умолчанию
-      if (Array.isArray(this.allValues)) {
-        let options = Object.assign({}, this.options)
-        options.default = Object.assign([], this.allValues)
-        this.options = options
-      }
-
-      // При изменении размера экрана, и скроллинге, определяем с какой стороны показывать выпадающий список
-      window.addEventListener('resize', function () {
-        $vue.computedDropdownTop()
-      })
-      window.addEventListener('scroll', function () {
-        $vue.computedDropdownTop()
-      })
-    },
-    updated () {
-      this.computedDropdownTop()
     }
   }
 </script>
