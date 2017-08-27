@@ -1,5 +1,5 @@
-import Multiselect from './Multiselect.vue'
-import 'font-awesome/css/font-awesome.min.css'
+const Multiselect = require('vue-loader!./Multiselect.vue')
+require('font-awesome/css/font-awesome.min.css')
 
 const install = function (Vue, options) {
   Vue.component('multiselect', Multiselect)
