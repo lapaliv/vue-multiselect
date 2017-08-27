@@ -198,7 +198,7 @@ export default {
       if (hasEnoughSpaceBelow || spaceBelow > spaceAbove) {
         this.$refs.dropdownList.style.bottom = null
       } else {
-        this.$refs.dropdownList.style.bottom = '100%'
+        this.$refs.dropdownList.style.bottom = 'calc(100% - 24px)'
       }
     },
     handleLoadOptionImage () {
@@ -245,6 +245,14 @@ export default {
       return option instanceof Object && option.hasOwnProperty(this.getProp('optionKeyName'))
         ? option[this.getProp('optionKeyName')]
         : this.getOptionTitle(option)
+    },
+    getOptionHighlightTitle (option) {
+      let title = this.getOptionTitle(option)
+      if (this.query.length) {
+        return title.replace(new RegExp('(' + this.query + ')', 'gi'), '<span style="background: #fff2a8;">$1</span>')
+      }
+
+      return title
     }
   },
   watch: {

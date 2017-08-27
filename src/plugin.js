@@ -11,8 +11,9 @@ const install = function (Vue, options) {
     optionImageName: 'image',
     placeholder: 'Start typing...',
     noResultsText: 'No results',
-    isSearch: true,
-    stubText: 'Select an item'
+    hasSearch: true,
+    stubText: 'Select an item',
+    hasHighlights: true
   }, options)
 }
 

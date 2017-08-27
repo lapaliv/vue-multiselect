@@ -6,7 +6,8 @@
            ref="input"
            :disabled="disabled"
            @focus="$parent.handleFocusInput"
-           v-if="$parent.getProp('isSearch')"
+           v-if="$parent.getProp('hasSearch')"
+           :id="$parent.$props.id"
     >
     <div class="d-inline-block py-1 flex-column w-100 stub" @click="$parent.handleClickByCaret" v-else>
         {{ $parent.getProp('stubText') }}

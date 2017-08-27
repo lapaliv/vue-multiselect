@@ -26,7 +26,8 @@
                          :src="getOptionImage(option)"
                          :alt="getOptionTitle(option)"
                     />
-                    {{ getOptionTitle(option) }}
+                    <span v-if="showDropdownHighlightTitle" v-html="getOptionHighlightTitle(option)"></span>
+                    <span v-else>{{ getOptionTitle(option) }}</span>
                 </li>
                 <li v-if="showDropdownNoResults" class="list-group-item text-muted py-2 px-3">
                     {{ getProp('noResultsText') }}
@@ -103,7 +104,7 @@
         type: Array,
         'default': null
       },
-      isSearch: {
+      hasSearch: {
         type: Boolean,
         'default': null
       },
@@ -114,6 +115,14 @@
       disabled: {
         type: Boolean,
         'default': false
+      },
+      hasHighlights: {
+        type: Boolean,
+        'default': null
+      },
+      id: {
+        type: String,
+        'default': null
       }
     },
     computed: {
@@ -124,13 +133,16 @@
         }
       },
       showSearchOrStub () {
-        return !this.countSelectedOptions || this.getProp('isSearch')
+        return !this.countSelectedOptions || this.getProp('hasSearch')
       },
       showDropdownNoResults () {
         return !Object.keys(this.dropdownOptions).length
       },
       showInput () {
-        return this.getProp('isSearch')
+        return this.getProp('hasSearch')
+      },
+      showDropdownHighlightTitle () {
+        return this.query.length && this.getProp('hasHighlights')
       }
     }
   }

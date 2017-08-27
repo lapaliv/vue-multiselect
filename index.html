@@ -6,21 +6,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="https://unpkg.com/vue-bootstrap-multiselect@1.0.10/dist/vue-bootstrap-multiselect.min.css"
-          rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="https://unpkg.com/vue@2.4.2/dist/vue.min.js"></script>
-    <script type="text/javascript"
-            src="https://unpkg.com/vue-bootstrap-multiselect@1.0.10/dist/vue-bootstrap-multiselect.min.js"></script>
 </head>
 <body style="margin-top: 30px;">
 <div id="app">
-    <h3 class="text-center">Local components</h3>
+    <h3 class="text-center">Components</h3>
 
     <div class="row">
         <div class="col-md-6 ml-auto mr-auto">
             <div class="form-group">
-                <label>Simple select</label>
-                <div @click="disabled0 = !disabled0">click</div>
+                <label for="model0">Simple select</label>
                 <component is="multiselect" :default="{
                                 Monday: 'Monday',
                                 Tuesday: 'Tuesday',
@@ -33,7 +27,9 @@
                            v-model="model0"
                            :attach-input="true"
                            name="model0"
+                           :has-hightlights="false"
                            :disabled="disabled0"
+                           id="model0"
                 ></component>
             </div>
         </div>
@@ -43,7 +39,7 @@
             <div class="form-group">
                 <label>Multiselect</label>
                 <component is="multiselect"
-                           :is-search="false"
+                           :has-search="false"
                            :default="[
                           {
                             id: 'Monday',
@@ -76,6 +72,7 @@
                         ]"
                            @change="handleChangeModel1"
                            name="model1"
+                           :has-hightlights="false"
                            :attach-input="true"
                 ></component>
             </div>
@@ -122,7 +119,7 @@
                     title: "Windler Braden",
                     image: "http://lorempixel.com/640/480/?74964"
                 }
-            ]' v-model="model2"></component>
+            ]' v-model="model2" :has-hightlights="false"></component>
             </div>
         </div>
     </div>
@@ -133,6 +130,7 @@
                 <component is="multiselect"
                            async-search-url="https://vue-bootstrap-multiselect.000webhostapp.com/"
                            v-model="model3"
+                           :has-hightlights="false"
                 ></component>
             </div>
         </div>
@@ -154,6 +152,7 @@
                             }"
                            :is-multi="false"
                            :value="null"
+                           :has-hightlights="false"
                 ></component>
             </div>
         </div>
@@ -172,6 +171,7 @@
                            :is-multi="false"
                            :disabled="true"
                            value="Monday"
+                           :has-hightlights="false"
                 ></component>
             </div>
         </div>
@@ -189,12 +189,29 @@
                             }"
                            :is-multi="false"
                            value="Monday"
+                           :has-hightlights="false"
+                ></component>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 ml-auto mr-auto">
+            <div class="form-group">
+                <label>Simple select with highlight</label>
+                <component is="multiselect" :default="{
+                                Monday: 'Monday',
+                                Tuesday: 'Tuesday',
+                                Wednesday:'Wednesday',
+                                Thursday: 'Thursday',
+                                Friday: 'Friday',
+                                Saturday: 'Saturday',
+                                Sunday: 'Sunday'
+                            }"
+                           :is-multi="false"
                 ></component>
             </div>
         </div>
     </div>
 </div>
-
-<!-- built files will be auto injected -->
 </body>
 </html>
