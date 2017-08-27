@@ -6,3 +6,4 @@ src/main.js
 /.gitignore
 /index.html
 /static/
+/.babelrc
