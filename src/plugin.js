@@ -1,5 +1,5 @@
 import Multiselect from './Multiselect.vue'
-import './assets/fontello.css'
+import 'font-awesome/css/font-awesome.min.css'
 
 const install = function (Vue, options) {
   Vue.component('multiselect', Multiselect)

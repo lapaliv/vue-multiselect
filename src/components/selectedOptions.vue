@@ -18,7 +18,7 @@
                    :name="$parent.$props.name + ($parent.getProp('isMulti') ? '[]' : '')"
                    :value="$parent.getOptionKey(option)"
             >
-            <i class="icon-cancel float-right d-flex flex-column m-2 align-self-center"
+            <i class="fa fa-remove float-right d-flex flex-column m-2 align-self-center"
                @click="$parent.handleClickByDeleteFromSelectedOptions($event, option)"></i>
         </li>
     </ul>
